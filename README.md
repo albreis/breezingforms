@@ -1,4 +1,4 @@
-# breezingforms
+# Breezing Forms - Extended
 
 O Breezing Forms tem alguns bugs conhecidos que não permitem que sejam adicionados
 mais de um formulário na mesma página pois geram alguns conflitos.
