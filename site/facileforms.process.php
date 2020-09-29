@@ -1536,9 +1536,9 @@ class HTML_facileFormsProcessor {
 			"} // ff_getForm"
 		);
 
-		$code = "function ff_submitForm()" . nl() .
-		        "{if(document.getElementById('bfSubmitButton')){document.getElementById('bfSubmitButton').disabled = true;} if(typeof JQuery != 'undefined'){JQuery('.bfCustomSubmitButton').prop('disabled', true);} bfCheckCaptcha();}" . nl();
-		$code.= "function ff_submitForm2()" . nl() .
+		$code = "function ff_submitForm".$this->form_id."()" . nl() .
+		        "{if(document.getElementById('bfSubmitButton')){document.getElementById('bfSubmitButton').disabled = true;} if(typeof JQuery != 'undefined'){JQuery('.bfCustomSubmitButton').prop('disabled', true);} bfCheckCaptcha" . $this->form_id . "();}" . nl();
+		$code.= "function ff_submitForm2".$this->form_id."()" . nl() .
 		        "{if(document.getElementById('bfSubmitButton')){document.getElementById('bfSubmitButton').disabled = true;} if(typeof JQuery != 'undefined'){JQuery('.bfCustomSubmitButton').prop('disabled', true);} " . nl();
 		if ($this->inline)
 			$code .= " if(typeof bf_ajax_submit != 'undefined') { bf_ajax_submit() } else { submitform('submit'); }" . nl();
@@ -1548,12 +1548,12 @@ class HTML_facileFormsProcessor {
 		$library[] = array('ff_submitForm', $code);
 
 		$library[] = array('ff_validationFocus',
-			"function ff_validationFocus(name)" . nl() .
+			"function ff_validationFocus".$this->form_id."(name)" . nl() .
 			"{" . nl() .
 			"    if (name==undefined || name=='') {" . nl() .
 			"        // set focus if name of first failing element was set" . nl() .
 			"        if (ff_validationFocusName!='') {" . nl() .
-			"            ff_switchpage(ff_getPageByName(ff_validationFocusName));" . nl() .
+			"            ff_switchpage".$this->form_id."(ff_getPageByName(ff_validationFocusName));" . nl() .
 			"            if(ff_getElementByName(ff_validationFocusName).focus){" . nl() .
 			"	            ff_getElementByName(ff_validationFocusName).focus();" . nl() .
 			"			 }" . nl() .
@@ -1563,13 +1563,13 @@ class HTML_facileFormsProcessor {
 			"        if (ff_validationFocusName=='')" . nl() .
 			"            ff_validationFocusName = name;" . nl() .
 			"    } // if" . nl() .
-			"} // ff_validationFocus"
+			"} // ff_validationFocus".$this->form_id.""
 		);
-
-		$code = "function ff_validation(page)" . nl() .
+		
+		$code = "function ff_validation".$this->form_id."(page)" . nl() .
 		        "{" . nl() .
-		        "    if(typeof inlineErrorElements != 'undefined') inlineErrorElements = new Array();" . nl() .
-		        "    error = '';" . nl() .
+		        "    if(typeof inlineErrorElements".$this->form_id." != 'undefined') inlineErrorElements".$this->form_id." = new Array();" . nl() .
+		        "    error".$this->form_id." = '';" . nl() .
 		        "    ff_validationFocusName = '';" . nl();
 		$curr = -1;
 		for ($i = 0; $i < $this->rowcount; $i++) {
@@ -1607,23 +1607,23 @@ class HTML_facileFormsProcessor {
 					$msg = "";
 				}
 				$code .= " if( typeof bfDeactivateField == 'undefined' || !bfDeactivateField['ff_nm_" . $row->name . "[]'] ){ " . nl();
-				$code .= "        errorout = " . $funcname . "(document." . $this->form_id . "['ff_nm_" . $row->name . "[]'],\"" . $msg . "\");" . nl();
-				$code .= "        error += errorout" . nl();
-				$code .= "        if(typeof inlineErrorElements != 'undefined'){" . nl();
-				$code .= "             inlineErrorElements.push([\"" . $row->name . "\",errorout]);" . nl();
+				$code .= "        errorout".$this->form_id." = " . $funcname . "(document." . $this->form_id . "['ff_nm_" . $row->name . "[]'],\"" . $msg . "\");" . nl();
+				$code .= "        error".$this->form_id." += errorout".$this->form_id."" . nl();
+				$code .= "        if(typeof inlineErrorElements".$this->form_id." != 'undefined'){" . nl();
+				$code .= "             inlineErrorElements".$this->form_id.".push([\"" . $row->name . "\",errorout".$this->form_id."]);" . nl();
 				$code .= "        }" . nl();
 				$code .= "}" . nl();
 			} // if
 		} // for
 		if ($curr > 0)
 			$code .= "    } // if" . nl();
-		$code .= 'if(error != "" && document.getElementById(\'ff_capimgValue\')){
+		$code .= 'if(error'.$this->form_id.' != "" && document.getElementById(\'ff_capimgValue\')){
                  document.getElementById(\'ff_capimgValue\').src = \'' . JURI::root(true) . (JFactory::getApplication()->isAdmin() ? '/administrator' : '') . '/components/com_breezingforms/images/captcha/securimage_show.php?bfMathRandom=\' + Math.random();
 		 document.getElementById(\'bfCaptchaEntry\').value = "";
 	    }';
-		$code .= 'if(error!="" && document.getElementById("bfSubmitButton")){document.getElementById("bfSubmitButton").disabled = false;}' . nl();
-		$code .= 'if(error!="" && typeof JQuery != "undefined"){JQuery(".bfCustomSubmitButton").prop("disabled", false);}' . nl();
-		$code .= "    return error;" . nl() .
+		$code .= 'if(error'.$this->form_id.'!="" && document.querySelector("#'.$this->form_id.' #bfSubmitButton")){document.querySelector("#'.$this->form_id.' #bfSubmitButton").disabled = false;}' . nl();
+		$code .= 'if(error'.$this->form_id.'!="" && typeof JQuery != "undefined"){JQuery("#'.$this->form_id.' .bfCustomSubmitButton").prop("disabled", false);}' . nl();
+		$code .= "    return error".$this->form_id.";" . nl() .
 		         "} // ff_validation";
 		$library[] = array('ff_validation', $code);
 
@@ -1825,7 +1825,7 @@ class HTML_facileFormsProcessor {
 		if ($this->formrow->template_code_processed == '') {
 
 			// ff_switchpage
-			$code = "function ff_switchpage(page)" . nl() .
+			$code = "function ff_switchpage".$this->form_id."(page)" . nl() .
 			        "{;" . nl() .
 			        "    if (page>=1 && page<=ff_lastpage && page!=ff_currentpage) {" . nl() .
 			        "        vis = 'visible';" . nl();
@@ -1857,13 +1857,13 @@ class HTML_facileFormsProcessor {
 			$visPages = '';
 			$pagesSize = isset($this->formrow->pages) ? intval($this->formrow->pages) : 1;
 			for ($pageCnt = 1; $pageCnt <= $pagesSize; $pageCnt++) {
-				$visPages .= 'if(document.getElementById("bfPage' . $pageCnt . '"))document.getElementById("bfPage' . $pageCnt . '").style.display = "none";';
+				$visPages .= 'if(document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage' . $pageCnt . '"))document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage' . $pageCnt . '").style.display = "none";';
 
 			}
 
-			$code = 'function ff_switchpage(page){
+			$code = 'function ff_switchpage'.$this->form_id.'(page){
 				' . $visPages . '
-				if(document.getElementById("bfPage"+page))document.getElementById("bfPage"+page).style.display = "";
+				if(document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage"+page))document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage"+page).style.display = "";
 				ff_currentpage = page;
 				' . ($this->formrow->heightmode == 1 ? "ff_resizepage(" . $this->formrow->heightmode . ", " . $this->formrow->height . ");" : "") . '
 				ff_initialize("pageentry");
@@ -2451,13 +2451,13 @@ class HTML_facileFormsProcessor {
 						if(typeof bfUseErrorAlerts == "undefined"){
 							alert("' . addslashes(BFText::_('COM_BREEZINGFORMS_FILE_EXTENSION_NOT_ALLOWED')) . '");
 						} else {
-							bfShowErrors("' . addslashes(BFText::_('COM_BREEZINGFORMS_FILE_EXTENSION_NOT_ALLOWED')) . '");
+							bfShowErrors'.$this->form_id.'("' . addslashes(BFText::_('COM_BREEZINGFORMS_FILE_EXTENSION_NOT_ALLOWED')) . '");
 						}
-						if(ff_currentpage != ' . $row->page . ')ff_switchpage(' . $row->page . ');
-                                                if(document.getElementById("bfSubmitButton")){
-                                                    document.getElementById("bfSubmitButton").disabled = false;
+						if(ff_currentpage != ' . $row->page . ')ff_switchpage'.$this->form_id.'(' . $row->page . ');
+                                                if(document.querySelector("#'.$this->form_id.' #bfSubmitButton")){
+                                                    document.querySelector("#'.$this->form_id.' #bfSubmitButton").disabled = false;
                                                 }
-                                                if(typeof JQuery != "undefined"){JQuery(".bfCustomSubmitButton").prop("disabled", false);}
+                                                if(typeof JQuery != "undefined"){JQuery("#'.$this->form_id.' .bfCustomSubmitButton").prop("disabled", false);}
 						return false;
 					}
 					';
@@ -2470,7 +2470,7 @@ class HTML_facileFormsProcessor {
 		}
 		';
 
-		$capFunc = 'function bfCheckCaptcha(){if(checkFileExtensions())ff_submitForm2();}';
+		$capFunc = 'function bfCheckCaptcha' . $this->form_id . '(){if(checkFileExtensions())ff_submitForm2'.$this->form_id.'();}';
 
 		for ($i = 0; $i < $this->rowcount; $i++) {
 			$row = $this->rows[$i];
@@ -2515,7 +2515,7 @@ class HTML_facileFormsProcessor {
                                                                                     if(typeof bfDoFlashUpload != \'undefined\'){
                                                                                         bfDoFlashUpload();
                                                                                     } else {
-									   		ff_submitForm2();
+									   		ff_submitForm2'.$this->form_id.'();
                                                                                     }
 									   } else {
                                                                                 if(typeof JQuery != "undefined" && JQuery("#bfSubmitMessage"))
@@ -2526,10 +2526,10 @@ class HTML_facileFormsProcessor {
                                                                                 if(typeof bfUseErrorAlerts == "undefined"){
                                                                                     alert("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
 									        } else {
-                                                                                   if(typeof inlineErrorElements != "undefined"){
-                                                                                     inlineErrorElements.push(["bfCaptchaEntry","' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '"]);
+                                                                                   if(typeof inlineErrorElements'.$this->form_id.' != "undefined"){
+                                                                                     inlineErrorElements'.$this->form_id.'.push(["bfCaptchaEntry","' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '"]);
                                                                                    }
-									           bfShowErrors("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
+									           bfShowErrors'.$this->form_id.'("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
 									        }
                                                                                 if(typeof ladda_button != "undefined"){
                                                                                     
@@ -2538,12 +2538,12 @@ class HTML_facileFormsProcessor {
                                                                                 
 											document.getElementById(\'ff_capimgValue\').src = \'' . JURI::root(true) . (JFactory::getApplication()->isAdmin() ? '/administrator' : '') . '/components/com_breezingforms/images/captcha/securimage_show.php?bfMathRandom=\' + Math.random();
 											document.getElementById(\'bfCaptchaEntry\').value = "";
-											if(ff_currentpage != ' . $row->page . ')ff_switchpage(' . $row->page . ');
+											if(ff_currentpage != ' . $row->page . ')ff_switchpage'.$this->form_id.'(' . $row->page . ');
 											document.getElementById(\'bfCaptchaEntry\').focus();
-                                                                                        if(document.getElementById("bfSubmitButton")){
-                                                                                            document.getElementById("bfSubmitButton").disabled = false;
+                                                                                        if(document.querySelector("#'.$this->form_id.' #bfSubmitButton")){
+                                                                                            document.querySelector("#'.$this->form_id.' #bfSubmitButton").disabled = false;
                                                                                         }
-                                                                                        if(typeof JQuery != "undefined"){JQuery(".bfCustomSubmitButton").prop("disabled", false);}
+                                                                                        if(typeof JQuery != "undefined"){JQuery("#'.$this->form_id.' .bfCustomSubmitButton").prop("disabled", false);}
 										}
                                                                                 
 									}
@@ -2559,7 +2559,7 @@ class HTML_facileFormsProcessor {
 					var funcDone = null;
 				}
 
-				function bfCheckCaptcha(){
+				function bfCheckCaptcha' . $this->form_id . '(){
 					if(checkFileExtensions()){
                                                var ao = new bfAjaxObject101();
                                                ao.sndReq("get","' . JRoute::_("index.php?raw=true&option=com_breezingforms&checkCaptcha=true&Itemid=0&tmpl=component", false) .'&value="+document.getElementById("bfCaptchaEntry").value,"");
@@ -2569,7 +2569,7 @@ class HTML_facileFormsProcessor {
 			} else if ($row->type == "ReCaptcha") {
 
 				$capFunc = 'var bfReCaptchaLoaded = true;
-                                    function bfCheckCaptcha(){
+                                    function bfCheckCaptcha' . $this->form_id . '(){
 					if(checkFileExtensions()){
                                                 function bfValidateCaptcha()
                                                 {
@@ -2577,7 +2577,7 @@ class HTML_facileFormsProcessor {
 														if(typeof bfDoFlashUpload != \'undefined\'){
 															bfDoFlashUpload();
 														} else {
-															ff_submitForm2();
+															ff_submitForm2'.$this->form_id.'();
 														}
 														return;
                                                     }
@@ -2597,7 +2597,7 @@ class HTML_facileFormsProcessor {
                                                             if(typeof bfDoFlashUpload != \'undefined\'){
                                                                 bfDoFlashUpload();
                                                             } else {
-                                                                ff_submitForm2();
+                                                                ff_submitForm2'.$this->form_id.'();
                                                             }
                                                         }
                                                         else
@@ -2605,21 +2605,21 @@ class HTML_facileFormsProcessor {
                                                                 if(typeof bfUseErrorAlerts == "undefined"){
                                                                         alert("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
                                                                 } else {
-                                                                    if(typeof inlineErrorElements != "undefined"){
-                                                                        inlineErrorElements.push(["bfReCaptchaEntry","' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '"]);
+                                                                    if(typeof inlineErrorElements'.$this->form_id.' != "undefined"){
+                                                                        inlineErrorElements'.$this->form_id.'.push(["bfReCaptchaEntry","' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '"]);
                                                                     }
-                                                                    bfShowErrors("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
+                                                                    bfShowErrors'.$this->form_id.'("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
                                                                 }
 
-                                                                if(ff_currentpage != ' . $row->page . ')ff_switchpage(' . $row->page . ');
+                                                                if(ff_currentpage != ' . $row->page . ')ff_switchpage'.$this->form_id.'(' . $row->page . ');
                                                                 Recaptcha.focus_response_field();
 
                                                                 Recaptcha.reload();
 
-                                                                if(document.getElementById("bfSubmitButton")){
-                                                                    document.getElementById("bfSubmitButton").disabled = false;
+                                                                if(document.querySelector("#'.$this->form_id.' #bfSubmitButton")){
+                                                                    document.querySelector("#'.$this->form_id.' #bfSubmitButton").disabled = false;
                                                                 }
-                                                                if(typeof JQuery != "undefined"){JQuery(".bfCustomSubmitButton").prop("disabled", false);}
+                                                                if(typeof JQuery != "undefined"){JQuery("#'.$this->form_id.' .bfCustomSubmitButton").prop("disabled", false);}
                                                                 if(typeof ladda_button != "undefined"){
                                                                     bf_restore_submitbutton();
                                                                 }
@@ -2642,19 +2642,19 @@ class HTML_facileFormsProcessor {
 	                                                            if(typeof bfUseErrorAlerts == "undefined"){
 	                                                                    alert("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
 	                                                            } else {
-	                                                                if(typeof inlineErrorElements != "undefined"){
-	                                                                    inlineErrorElements.push(["bfReCaptchaEntry","' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '"]);
+	                                                                if(typeof inlineErrorElements'.$this->form_id.' != "undefined"){
+	                                                                    inlineErrorElements'.$this->form_id.'.push(["bfReCaptchaEntry","' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '"]);
 	                                                                }
-	                                                                bfShowErrors("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
+	                                                                bfShowErrors'.$this->form_id.'("' . addslashes(BFText::_('COM_BREEZINGFORMS_CAPTCHA_MISSING_WRONG')) . '");
 	                                                            }
                                                             
                                                             
-                                                                if(ff_currentpage != ' . $row->page . ')ff_switchpage(' . $row->page . ');
+                                                                if(ff_currentpage != ' . $row->page . ')ff_switchpage'.$this->form_id.'(' . $row->page . ');
                                                             }
-                                                            if(document.getElementById("bfSubmitButton")){
-                                                                document.getElementById("bfSubmitButton").disabled = false;
+                                                            if(document.querySelector("#'.$this->form_id.' #bfSubmitButton")){
+                                                                document.querySelector("#'.$this->form_id.' #bfSubmitButton").disabled = false;
                                                             }
-                                                            if(typeof JQuery != "undefined"){JQuery(".bfCustomSubmitButton").prop("disabled", false);}
+                                                            if(typeof JQuery != "undefined"){JQuery("#'.$this->form_id.' .bfCustomSubmitButton").prop("disabled", false);}
                                                             if(typeof ladda_button != "undefined"){
                                                                 bf_restore_submitbutton();
                                                             }
@@ -2665,7 +2665,7 @@ class HTML_facileFormsProcessor {
                                                             if(typeof bfDoFlashUpload != \'undefined\'){
                                                                 bfDoFlashUpload();
                                                             } else {
-                                                                ff_submitForm2();
+                                                                ff_submitForm2'.$this->form_id.'();
                                                             }
                                                         }
                                                     }
@@ -3179,12 +3179,12 @@ class HTML_facileFormsProcessor {
 
 								if($cbFlashUploadValidationOverride == ''){
 									$cbJs .= '
-                                            function ff_flashupload_not_empty(element, message)
+                                            function ff_flashupload_not_empty'.$this->form_id.'(element, message)
                                             {
                                                 if(typeof bfSummarizers == "undefined") { alert("Flash upload validation only available in QuickMode!"); return ""}
                                                 if(JQuery("#bfFlashFileQueue"+element.id.split("ff_elem")[1]).html() != "" || cbFlashElemCnt[element.id] != 0 ) return "";
                                                 if (message=="") message = "Please enter "+element.name+".\n";
-                                                ff_validationFocus(element.name);
+                                                ff_validationFocus'.$this->form_id.'(element.name);
                                                 return message;
                                             }
                                             ';
@@ -3324,7 +3324,7 @@ class HTML_facileFormsProcessor {
                     <script type="text/javascript">
                     <!--' . nl() . '
                     var cbFlashElemCnt = new Array();
-                    function bfCheckUploadValidation(id, obj, deactivatable){
+                    function bfCheckUploadValidation'.$this->form_id.'(id, obj, deactivatable){
                         if(obj.checked){
                             cbFlashElemCnt[id]--;
                         }else{
@@ -3337,7 +3337,7 @@ class HTML_facileFormsProcessor {
                         }
                     }
                     '.$cbJs.'
-                    function bfLoadContentBuilderEditable(){
+                    function bfLoadContentBuilderEditable'.$this->form_id.'(){
                         ' . $js . '
                         // legacy seccode removal
                         for(var i = 0;i < document.ff_form' . $this->form . '.elements.length;i++){
@@ -3359,7 +3359,7 @@ class HTML_facileFormsProcessor {
 				JFactory::getDocument()->addScriptDeclaration('<!--' . nl() . 'var bfDeactivateField = new Array();' . nl() . '//-->');
 				echo '<script type="text/javascript">' . nl();
 				echo '<!--' . nl();
-				echo 'function bfDisableContentBuilderFields(){' . nl();
+				echo 'function bfDisableContentBuilderFields'.$this->form_id.'(){' . nl();
 			}
 			foreach ($cbNonEditableFields As $cbNonEditableField) {
 				echo 'if(typeof document.getElementById("ff_elem' . $cbNonEditableField . '").disabled != "undefined"){' . nl();
@@ -4119,12 +4119,12 @@ class HTML_facileFormsProcessor {
 			$visPages = '';
 			$pagesSize = isset($this->formrow->pages) ? intval($this->formrow->pages) : 1;
 			for ($pageCnt = 1; $pageCnt <= $pagesSize; $pageCnt++) {
-				$visPages .= 'if(document.getElementById("bfPage' . $pageCnt . '"))document.getElementById("bfPage' . $pageCnt . '").style.display = "none";';
+				$visPages .= 'if(document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage' . $pageCnt . '"))document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage' . $pageCnt . '").style.display = "none";';
 			}
 			echo '<script type="text/javascript">
                               <!--
 				' . $visPages . ';
-				if(document.getElementById("bfPage' . $this->page . '"))document.getElementById("bfPage' . $this->page . '").style.display = "";
+				if(document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage' . $this->page . '"))document.querySelector("#ff_formdiv' . $this->formrow->id . ' #bfPage' . $this->page . '").style.display = "";
                               //-->
                               </script>' . nl();
 		}

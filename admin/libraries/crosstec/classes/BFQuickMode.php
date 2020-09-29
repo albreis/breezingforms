@@ -481,7 +481,7 @@ function bfTriggerRules() {
 
 		JFactory::getDocument()->addScriptDeclaration(
 				$jQuery . '
-			var inlineErrorElements = new Array();
+			var inlineErrorElements'.$this->p->form_id.' = new Array();
 			var bfSummarizers = new Array();
 			var bfDeactivateField = new Array();
 			var bfDeactivateSection = new Array();
@@ -490,20 +490,20 @@ function bfTriggerRules() {
                         function bf_validate_nextpage(element, action)
                         {
                             if(typeof bfUseErrorAlerts != "undefined"){
-                             JQuery(".bfErrorMessage").html("");
-                             JQuery(".bfErrorMessage").css("display","none");
+                             JQuery(event.target).parents("form").find(".bfErrorMessage").html("");
+                             JQuery(event.target).parents("form").find(".bfErrorMessage").css("display","none");
                             }
 
-                            error = ff_validation(ff_currentpage);
-                            if (error != "") {
+                            error'.$this->p->form_id.' = ff_validation'.$this->p->form_id.'(ff_currentpage);
+                            if (error'.$this->p->form_id.' != "") {
                                if(typeof bfUseErrorAlerts == ""){
-                                   alert(error);
+                                   alert(error'.$this->p->form_id.');
                                 } else {
-                                   bfShowErrors(error);
+                                   bfShowErrors(error'.$this->p->form_id.');
                                 }
-                                ff_validationFocus("");
+                                ff_validationFocus'.$this->p->form_id.'("");
                             } else {
-                                ff_switchpage(ff_currentpage+1);
+                                ff_switchpage'.$this->p->form_id.'(ff_currentpage+1);
                                 self.scrollTo(0,0);
                             }
                         }
@@ -651,20 +651,20 @@ function bfTriggerRules() {
 			if (!$this->useErrorAlerts) {
 				$defaultErrors = '';
 				if ($this->useDefaultErrors || (!$this->useDefaultErrors && !$this->useBalloonErrors)) {
-					$defaultErrors = 'JQuery(".bfErrorMessage").html("");
-					JQuery(".bfErrorMessage").css("display","none");
-					JQuery(".bfErrorMessage").fadeIn(1500);
-					var allErrors = "";
-					var errors = error.split("\n");
+					$defaultErrors = 'JQuery(event.target).parents("form").find(".bfErrorMessage").html("");
+					JQuery(event.target).parents("form").find(".bfErrorMessage").css("display","none");
+					JQuery(event.target).parents("form").find(".bfErrorMessage").fadeIn(1500);
+					var allErrors'.$this->p->form_id.' = "";
+					var errors = error'.$this->p->form_id.'.split("\n");
 					for(var i = 0; i < errors.length; i++){
-						allErrors += "<div class=\"bfError\">" + errors[i] + "</div>";
+						allErrors'.$this->p->form_id.' += "<div class=\"bfError\">" + errors[i] + "</div>";
 					}
-					JQuery(".bfErrorMessage").html(allErrors);
-					JQuery(".bfErrorMessage").css("display","");';
+					JQuery(event.target).parents("form").find(".bfErrorMessage").html(allErrors'.$this->p->form_id.');
+					JQuery(event.target).parents("form").find(".bfErrorMessage").css("display","");';
 				}
 				JFactory::getDocument()->addScriptDeclaration('var bfUseErrorAlerts = false;' . "\n");
 				JFactory::getDocument()->addScriptDeclaration('
-				function bfShowErrors(error){
+				function bfShowErrors'.$this->p->form_id.'(error){
                                         ' . $defaultErrors . '
 
                                         if(JQuery.bfvalidationEngine)
@@ -675,35 +675,35 @@ function bfTriggerRules() {
                                               failure : function() {}
                                             });
 
-                                            for(var i = 0; i < inlineErrorElements.length; i++)
+                                            for(var i = 0; i < inlineErrorElements'.$this->p->form_id.'.length; i++)
                                             {
-                                                if(inlineErrorElements[i][1] != "")
+                                                if(inlineErrorElements'.$this->p->form_id.'[i][1] != "")
                                                 {
                                                     var prompt = null;
 
-                                                    if(inlineErrorElements[i][0] == "bfCaptchaEntry"){
-                                                        prompt = JQuery.bfvalidationEngine.buildPrompt("#bfCaptchaEntry",inlineErrorElements[i][1],"error");
+                                                    if(inlineErrorElements'.$this->p->form_id.'[i][0] == "bfCaptchaEntry"){
+                                                        prompt = JQuery.bfvalidationEngine.buildPrompt("#bfCaptchaEntry",inlineErrorElements'.$this->p->form_id.'[i][1],"error");
                                                     }
-                                                    else if(inlineErrorElements[i][0] == "bfReCaptchaEntry"){
+                                                    else if(inlineErrorElements'.$this->p->form_id.'[i][0] == "bfReCaptchaEntry"){
                                                         // nothing here yet for recaptcha, alert is default
-                                                        alert(inlineErrorElements[i][1]);
+                                                        alert(inlineErrorElements'.$this->p->form_id.'[i][1]);
                                                     }
-                                                    else if(typeof JQuery("#bfUploader"+inlineErrorElements[i][0]).get(0) != "undefined")
+                                                    else if(typeof JQuery("#bfUploader"+inlineErrorElements'.$this->p->form_id.'[i][0]).get(0) != "undefined")
                                                     {
-                                                        alert(inlineErrorElements[i][1]);
-                                                        //prompt = JQuery.bfvalidationEngine.buildPrompt("#"+JQuery("#bfUploader"+inlineErrorElements[i][0]).val(),inlineErrorElements[i][1],"error");
+                                                        alert(inlineErrorElements'.$this->p->form_id.'[i][1]);
+                                                        //prompt = JQuery.bfvalidationEngine.buildPrompt("#"+JQuery("#bfUploader"+inlineErrorElements'.$this->p->form_id.'[i][0]).val(),inlineErrorElements'.$this->p->form_id.'[i][1],"error");
                                                     }
-                                                    else if(typeof JQuery(".bfSignature"+inlineErrorElements[i][0]).get(0) != "undefined")
+                                                    else if(typeof JQuery(".bfSignature"+inlineErrorElements'.$this->p->form_id.'[i][0]).get(0) != "undefined")
                                                     {
-                                                    	//alert(inlineErrorElements[i][1]);
-                                                    	prompt = JQuery.bfvalidationEngine.buildPrompt(".bfSignature",inlineErrorElements[i][1],"error");
+                                                    	//alert(inlineErrorElements'.$this->p->form_id.'[i][1]);
+                                                    	prompt = JQuery.bfvalidationEngine.buildPrompt(".bfSignature",inlineErrorElements'.$this->p->form_id.'[i][1],"error");
                                                     }
                                                     else
                                                     {
-                                                        if(ff_getElementByName(inlineErrorElements[i][0])){
-                                                            prompt = JQuery.bfvalidationEngine.buildPrompt("#"+ff_getElementByName(inlineErrorElements[i][0]).id,inlineErrorElements[i][1],"error");
+                                                        if(ff_getElementByName(inlineErrorElements'.$this->p->form_id.'[i][0])){
+                                                            prompt = JQuery.bfvalidationEngine.buildPrompt("#"+ff_getElementByName(inlineErrorElements'.$this->p->form_id.'[i][0]).id,inlineErrorElements'.$this->p->form_id.'[i][1],"error");
                                                         }else{
-                                                            alert(inlineErrorElements[i][1]);
+                                                            alert(inlineErrorElements'.$this->p->form_id.'[i][1]);
                                                         }
                                                     }
 
@@ -721,19 +721,19 @@ function bfTriggerRules() {
                                                 }
                                                 else
                                                 {
-                                                    if(typeof JQuery("#bfUploader"+inlineErrorElements[i][0]).get(0) != "undefined")
+                                                    if(typeof JQuery("#bfUploader"+inlineErrorElements'.$this->p->form_id.'[i][0]).get(0) != "undefined")
                                                     {
-                                                        //JQuery.bfvalidationEngine.closePrompt("#"+JQuery("#bfUploader"+inlineErrorElements[i][0]).val());
+                                                        //JQuery.bfvalidationEngine.closePrompt("#"+JQuery("#bfUploader"+inlineErrorElements'.$this->p->form_id.'[i][0]).val());
                                                     }
                                                     else
                                                     {
-                                                        if(ff_getElementByName(inlineErrorElements[i][0])){
-                                                            JQuery.bfvalidationEngine.closePrompt("#"+ff_getElementByName(inlineErrorElements[i][0]).id);
+                                                        if(ff_getElementByName(inlineErrorElements'.$this->p->form_id.'[i][0])){
+                                                            JQuery.bfvalidationEngine.closePrompt("#"+ff_getElementByName(inlineErrorElements'.$this->p->form_id.'[i][0]).id);
                                                         }
                                                     }
                                                 }
                                             }
-                                            inlineErrorElements = new Array();
+                                            inlineErrorElements'.$this->p->form_id.' = new Array();
                                         }
 				}');
 			}
@@ -741,18 +741,18 @@ function bfTriggerRules() {
 				$this->fadingClass = ' bfFadingClass';
 				$this->fadingCall = 'bfFade();';
 				JFactory::getDocument()->addScriptDeclaration('
-					function bfFade(){
-						JQuery(".bfPageIntro").fadeIn(1000);
+					function bfFade'.$this->p->form_id.'(){
+						JQuery("#'.$this->p->form_id.' .bfPageIntro").fadeIn(1000);
 						var size = 0;
-						JQuery(".bfFadingClass").each(function(i,val){
+						JQuery("#'.$this->p->form_id.' .bfFadingClass").each(function(i,val){
 							var t = this;
 							setTimeout(function(){JQuery(t).fadeIn(1000)}, (i*100));
 							size = i;
 						});
-						setTimeout(\'JQuery(".bfSubmitButton").fadeIn(1000)\', size * 100);
-						setTimeout(\'JQuery(".bfPrevButton").fadeIn(1000)\', size * 100);
-						setTimeout(\'JQuery(".bfNextButton").fadeIn(1000)\', size * 100);
-						setTimeout(\'JQuery(".bfCancelButton").fadeIn(1000)\', size * 100);
+						setTimeout(\'JQuery("#'.$this->p->form_id.' .bfSubmitButton").fadeIn(1000)\', size * 100);
+						setTimeout(\'JQuery("#'.$this->p->form_id.' .bfPrevButton").fadeIn(1000)\', size * 100);
+						setTimeout(\'JQuery("#'.$this->p->form_id.' .bfNextButton").fadeIn(1000)\', size * 100);
+						setTimeout(\'JQuery("#'.$this->p->form_id.' .bfCancelButton").fadeIn(1000)\', size * 100);
 					}
 				');
 			}
@@ -760,10 +760,10 @@ function bfTriggerRules() {
 			if ($this->rollover && trim($this->rolloverColor) != '') {
 				JFactory::getDocument()->addScriptDeclaration('
 					var bfElemWrapBg = "";
-					function bfSetElemWrapBg(){
+					function bfSetElemWrapBg'.$this->p->form_id.'(){
 						bfElemWrapBg = JQuery(".bfElemWrap").css("background-color");
 					}
-					function bfRollover() {
+					function bfRollover'.$this->p->form_id.'() {
 						JQuery(".ff_elem").focus(
 							function(){
 								var parent = JQuery(this).parent();
@@ -788,7 +788,7 @@ function bfTriggerRules() {
 							}
 						);
 					}
-					function bfRollover2() {
+					function bfRollover2'.$this->p->form_id.'() {
 						JQuery(".bfElemWrap").mouseover(
 							function(){
 								JQuery(this).css("background","' . $this->rolloverColor . '");
@@ -947,6 +947,8 @@ function bfTriggerRules() {
 				} else if (JRequest::getInt('ff_form_submitted', 0) == 1 && $this->rootMdata['lastPageThankYou'] && $parentPage['pageNumber'] == count($this->dataObject['children'])) {
 					$display = '';
 				} else if (JRequest::getInt('ff_form_submitted', 0) == 1 && false == $this->rootMdata['lastPageThankYou'] && $parentPage['pageNumber'] == 1) {
+					$display = '';
+				} else if (JRequest::getInt('ff_form_submitted', 0) == 1 && 'ff_form' . JRequest::getInt('ff_form', 0) != $this->p->form_id) {
 					$display = '';
 				}
 
@@ -1522,7 +1524,7 @@ function bfTriggerRules() {
                                                         <!--
 							bfFlashUploaders.push('ff_elem" . $mdata['dbId'] . "');
                                                         var bfFlashFileQueue" . $mdata['dbId'] . " = {};
-                                                        function bfUploadImageThumb(file) {
+                                                        function bfUploadImageThumb".$this->p->form_id."(file) {
                                                                 var img;
                                                                 img = new ctplupload.Image;
                                                                 img.onload = function() {
@@ -1804,9 +1806,9 @@ function bfTriggerRules() {
 									$lang = ',lang: ' . json_encode($lang) . '';
 								}
 
-								$callSubmit = 'ff_validate_submit(this, \'click\')';
+								$callSubmit = 'ff_validate_submit'.$this->p->form_id.'(this, \'click\')';
 								if ($this->hasFlashUpload) {
-									$callSubmit = 'if(typeof bfAjaxObject101 == \'undefined\' && typeof bfReCaptchaLoaded == \'undefined\'){bfDoFlashUpload()}else{ff_validate_submit(this, \'click\')}';
+									$callSubmit = 'if(typeof bfAjaxObject101 == \'undefined\' && typeof bfReCaptchaLoaded == \'undefined\'){bfDoFlashUpload()}else{ff_validate_submit'.$this->p->form_id.'(this, \'click\')}';
 								}
 
                                 $badge = str_replace('invisible_','', trim($mdata['theme']));
@@ -2374,9 +2376,9 @@ function bfTriggerRules() {
 					echo '<button class="bfCancelButton button' . $this->fadingClass . '" type="submit" onclick="ff_resetForm(this, \'click\');"  value="' . htmlentities(trim($this->rootMdata['cancelLabel']), ENT_QUOTES, 'UTF-8') . '"><span>' . htmlentities(trim($this->rootMdata['cancelLabel']), ENT_QUOTES, 'UTF-8') . '</span></button>' . "\n";
 				}
 
-				$callSubmit = 'ff_validate_submit(this, \'click\')';
+				$callSubmit = 'ff_validate_submit'.$this->p->form_id.'(this, \'click\')';
 				if ($this->hasFlashUpload) {
-					$callSubmit = 'if(typeof bfAjaxObject101 == \'undefined\' && typeof bfReCaptchaLoaded == \'undefined\'){bfDoFlashUpload()}else{ff_validate_submit(this, \'click\')}';
+					$callSubmit = 'if(typeof bfAjaxObject101 == \'undefined\' && typeof bfReCaptchaLoaded == \'undefined\'){bfDoFlashUpload()}else{ff_validate_submit'.$this->p->form_id.'(this, \'click\')}';
 				}
 				if ($this->rootMdata['submitInclude'] && $dataObject['properties']['pageNumber'] + 1 > count($this->dataObject['children']) - $last) {
 					/* translatables */
@@ -2469,13 +2471,13 @@ function bfTriggerRules() {
                                 JQuery("#bfSubmitMessage").css("visibility","hidden");
                                 JQuery("#bfSubmitMessage").css("display","none");
                                 JQuery("#bfSubmitMessage").css("z-index","999999");
-				JQuery(".bfErrorMessage").html("");
-                                JQuery(".bfErrorMessage").css("display","none");
+				JQuery(event.target).parents("form").find(".bfErrorMessage").html("");
+                                JQuery(event.target).parents("form").find(".bfErrorMessage").css("display","none");
                                 for(var i = 0; i < bfUploaderErrorElements.length; i++){
                                     JQuery("#"+bfUploaderErrorElements[i]).html("");
                                 }
                                 bfUploaderErrorElements = [];
-                                if(ff_validation(0) == ""){
+                                if(ff_validation'.$this->p->form_id.'(0) == ""){
 					try{
                                             bfFlashUploadInterval = window.setInterval( bfCheckFlashUploadProgress, 1000 );
                                             if(bfFlashUploadersLength > 0){
@@ -2488,12 +2490,12 @@ function bfTriggerRules() {
 					} catch(e){alert(e)}
 				} else {
 					if(typeof bfUseErrorAlerts == "undefined"){
-                                            alert(error);
+                                            alert(error'.$this->p->form_id.');
                                         } else {
-                                            bfShowErrors(error);
+                                            bfShowErrors(error'.$this->p->form_id.');
                                         }
-                                        ff_validationFocus("");
-                                        document.getElementById("bfSubmitButton").disabled = false;
+                                        ff_validationFocus'.$this->p->form_id.'("");
+                                        document.querySelector("#'.$this->p->form_id.' #bfSubmitButton").disabled = false;
 				}
 			}
 			function bfCheckFlashUploadProgress(){
@@ -2501,9 +2503,9 @@ function bfTriggerRules() {
 					JQuery("#bfFileQueue").css("visibility","hidden");
 					window.clearInterval( bfFlashUploadInterval );
                                         if(typeof bfAjaxObject101 != \'undefined\' || typeof bfReCaptchaLoaded != \'undefined\'){
-                                            ff_submitForm2();
+                                            ff_submitForm2'.$this->p->form_id.'();
                                         }else{
-                                            ff_validate_submit(document.getElementById("bfSubmitButton"), "click");
+                                            ff_validate_submit'.$this->p->form_id.'(document.querySelector("#'.$this->p->form_id.' #bfSubmitButton"), "click");
                                         }
 					JQuery(".bfFlashFileQueueClass").html("");
                                         if(bfFlashUploadersLength > 0){
